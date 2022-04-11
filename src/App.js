@@ -6,14 +6,14 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 function App() {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-  const [highlightedText, setHightlightedText] = useState(null);
+  const [highlightedText, setHighlightedText] = useState(null);
 
   function onDocumentLoadSuccess({numPages}) {
     setNumPages(numPages);
   }
 
   function onHighlighted(event) {
-    setHightlightedText(document.getSelection().toString())
+    setHighlightedText(document.getSelection().toString())
   }
 
   const textRenderer = ({str, itemIndex}) => {
