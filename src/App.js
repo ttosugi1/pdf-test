@@ -1,23 +1,37 @@
-import logo from './logo.svg';
 import './App.css';
+import {Document, Page} from 'react-pdf/dist/esm/entry.webpack';
+import {useCallback, useState} from "react";
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 
 function App() {
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [highlightedText, setHightlightedText] = useState(null);
+
+  function onDocumentLoadSuccess({numPages}) {
+    setNumPages(numPages);
+  }
+
+  function onHighlighted(event) {
+    setHightlightedText(document.getSelection().toString())
+  }
+
+  const textRenderer = ({str, itemIndex}) => {
+    return (<span onMouseUp={onHighlighted}>{str}</span>)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" style={{"display": "flex"}}>
+      <Document file="http://localhost:3000/davidgreen.pdf" onLoadSuccess={onDocumentLoadSuccess}>
+        <Page pageNumber={pageNumber} customTextRenderer={textRenderer}/>
+      </Document>
+      <div className="Meta">
+        <h2>Highlighted text</h2>
+        <div>{highlightedText || 'Nothing is highlighted :('}</div>
+        <div>
+          Page {pageNumber} of {numPages}
+        </div>
+      </div>
     </div>
   );
 }
